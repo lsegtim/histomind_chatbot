@@ -1,6 +1,3 @@
-import os
-
-import motor.motor_asyncio
 import pandas as pd
 from bson import ObjectId
 from fastapi import FastAPI, Body
@@ -30,37 +27,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# load environment variables
-from dotenv import load_dotenv
-
-load_dotenv()
-
-client = motor.motor_asyncio.AsyncIOMotorClient(os.environ["MONGODB_URL"])
-db = client.histomind
-
-data_length = 100000
-
 chatbot = initialize_bot()
 
 
-class PyObjectId(ObjectId):
-    @classmethod
-    def __get_validators__(cls):
-        yield cls.validate
-
-    @classmethod
-    def validate(cls, v):
-        if not ObjectId.is_valid(v):
-            raise ValueError("Invalid objectid")
-        return ObjectId(v)
-
-    @classmethod
-    def __modify_schema__(cls, field_schema):
-        field_schema.update(type="string")
+def translate_message(message):
+    return translator.translate(message, dest='en').text
 
 
-# message: "message"
-# local: "en"
+def translate_message_back(message, dest='en'):
+    return translator.translate(message, dest=dest).text
+
 
 class ChatbotModel(BaseModel):
     message: str = Field(...)
@@ -82,18 +58,7 @@ class ChatbotModel(BaseModel):
 # Chatbot
 @app.post("/chatterbot")
 async def get_chatterbot(chatbot_model: ChatbotModel = Body(...)):
-    # response = str(translate_message(get_response_chatbot(chatbot_model.message, chatbot)))
-    # response = translate_message_back(response, chatbot_model.local)
-    response = "Hello"
-    return {"response": response}
+    response = str(translate_message(get_response_chatbot(chatbot_model.message, chatbot)))
+    response = translate_message_back(response, chatbot_model.local)
 
-
-@app.get("/chatbot/{message}")
-async def get_chatbot(message: str):
-    # # detect language
-    # # language = detect(message)
-    # if language == "en" or language == "de" or language == "ta":
-    #     response = str(get_response_chatbot(message, chatbot))
-    # else:
-    response = "Sorry, I don't understand that."
     return {"response": response}

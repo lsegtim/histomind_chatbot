@@ -53,9 +53,7 @@ def initialize_bot():
     #     # chatbot = train_bot_corpus(chatbot)
     #     chatbot = train_chatbot_with_custom_corpus(chatbot)
 
-    exit_conditions = (":q", "quit", "exit")
-
-    return chatbot, exit_conditions
+    return chatbot
 
 
 def get_response_chatbot(query, chatbot):
