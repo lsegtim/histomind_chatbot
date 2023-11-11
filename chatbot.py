@@ -3,7 +3,7 @@ import spacy
 from chatterbot import ChatBot
 
 
-# from chatterbot.trainers import ListTrainer, ChatterBotCorpusTrainer
+from chatterbot.trainers import ListTrainer, ChatterBotCorpusTrainer
 
 
 # def train_bot(chatbot):
@@ -20,12 +20,12 @@ from chatterbot import ChatBot
 #     return chatbot
 #
 #
-# # train chatbot with corpus
-# def train_bot_corpus(chatbot):
-#     corpus_trainer = ChatterBotCorpusTrainer(chatbot)
-#     corpus_trainer.train("chatterbot.corpus.english")
-#
-#     return chatbot
+# train chatbot with corpus
+def train_bot_corpus(chatbot):
+    corpus_trainer = ChatterBotCorpusTrainer(chatbot)
+    corpus_trainer.train("chatterbot.corpus.locations")
+
+    return chatbot
 #
 #
 # def train_chatbot_with_custom_corpus(chatbot):
@@ -61,15 +61,17 @@ def get_response_chatbot(query, chatbot):
     k = chatbot.get_response(query)
     return chatbot.get_response(query)
 
-#
-# if __name__ == "__main__":
-#     chatbot, exit_conditions = initialize_bot()
-#     # print("Bot initialized")
-#     # chatbot = train_bot_corpus(chatbot)
-#     # print("Bot trained")
-#     while True:
-#         query = input("> ")
-#         if query in exit_conditions:
-#             break
-#         else:
-#             print(f"🪴 {chatbot.get_response(query)}")
+
+if __name__ == "__main__":
+    chatbot = initialize_bot()
+    # print("Bot initialized")
+    # chatbot = train_bot_corpus(chatbot)
+    # print("Bot trained")
+
+    exit_conditions = (":q", "quit", "exit")
+    while True:
+        query = input("> ")
+        if query in exit_conditions:
+            break
+        else:
+            print(f"🪴 {chatbot.get_response(query)}")
